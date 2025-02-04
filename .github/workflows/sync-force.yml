@@ -21,14 +21,12 @@ jobs:
         run: |
           git config --global user.name "${{ secrets.GIT_USER_NAME }}"
           git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
-
       - name: Backup workflows
         run: |
           mkdir -p /tmp/workflows-backup
           cp -r .github/workflows/* /tmp/workflows-backup/
-
       - name: Add upstream repository
-        run: git remote add upstream https://github.com/sorangegu/mio-pro.git
+        run: git remote add upstream https://github.com/wzdnzd/aggregator.git
 
       - name: Fetch upstream changes
         run: git fetch upstream
@@ -38,5 +36,11 @@ jobs:
 
       - name: Restore workflows
         run: cp -r /tmp/workflows-backup/* .github/workflows/
+
+      - name: Commit and push changes
+        run: |
+          git add .github/workflows
+          git commit -m "Retain workflows while updating from upstream"
+          git push origin main --force
         env:
           GITHUB_TOKEN: ${{ secrets.SYNC_TOKEN }}

@@ -1,46 +1,46 @@
-name: Sync-force
+名称：Sync-force
 
-on:
-  schedule:
-    - cron: '0 */8 * * *'  # 每8小时执行一次
-  workflow_dispatch:  # 允许手动触发工作流
+开：
+  时间表：
+    - cron： '0 */8 * * *' # 每8小时执行一次
+  workflow_dispatch： # 允许手动触发工作流
 
-jobs:
-  sync:
-    runs-on: ubuntu-latest
+工作机会：
+  同步：
+    运行时间：ubuntu-latest
 
-    steps:
-      - name: Checkout forked repository
-        uses: actions/checkout@v2
-        with:
-          ref: main
-          repository: ${{ github.repository }}
-          token: ${{ secrets.SYNC_TOKEN }}
+    步骤：
+      - name： 签出 forked 仓库
+        用途：作/checkout@v2
+        替换为：
+          参考： main
+          存储库： ${{ github.repository }}
+          token： ${{ secrets.SYNC_TOKEN }}
 
-      - name: Set up Git
-        run: |
-          git config --global user.name "${{ secrets.GIT_USER_NAME }}"
-          git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
-      - name: Backup workflows
-        run: |
-          mkdir -p /tmp/workflows-backup
-          cp -r .github/workflows/* /tmp/workflows-backup/
-      - name: Add upstream repository
-        run: git remote add upstream https://github.com/wzdnzd/aggregator.git
+      - name：设置 Git
+        运行： |
+git config --global user.name “${{ 秘密.GIT_USER_NAME }}”
+git config --global user.email “${{ 秘密。GIT_USER_EMAIL }}”
+      - name： 备份工作流
+        运行： |
+mkdir -p /tmp/workflows-backup
+cp -r .github/workflows/* /tmp/workflows-backup/
+      - name： 添加上游仓库
+        运行： git remote add upstream https://github.com/wzdnzd/aggregator.git
 
-      - name: Fetch upstream changes
-        run: git fetch upstream
+      - name： 获取上游更改
+        运行： git fetch upstream
 
-      - name: Reset to upstream main
-        run: git reset --hard upstream/main
+      - name：重置为上游主
+        运行： git reset --hard upstream/main
 
-      - name: Restore workflows
-        run: cp -r /tmp/workflows-backup/* .github/workflows/
+      - name： 还原工作流
+        运行： cp -r /tmp/workflows-backup/* .github/workflows/
 
-      - name: Commit and push changes
-        run: |
-          git add .github/workflows
-          git commit -m "Retain workflows while updating from upstream"
-          git push origin main --force
-        env:
-          GITHUB_TOKEN: ${{ secrets.SYNC_TOKEN }}
+      - name：提交和推送更改
+        运行： |
+git add .github/workflows
+git commit -m “从上游更新时保留工作流”
+git push origin main --force
+        环境：
+          GITHUB_TOKEN：${{ secrets。SYNC_TOKEN }}
